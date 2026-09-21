@@ -1,8 +1,8 @@
-# NeuroForage
+# NeuraForge
 
 ## Neural Network From Scratch (NumPy Only)
 
-NeuroForage is a neural network framework implemented entirely from first principles using pure NumPy.
+NeuraForge is a neural network framework implemented entirely from first principles using pure NumPy.
 
 No PyTorch.  
 No TensorFlow.  
@@ -16,7 +16,7 @@ The goal of this project is to deeply understand and extend the mathematical fou
 
 Most deep learning implementations abstract away the core mathematics.
 
-NeuroForage focuses on:
+NeuraForge focuses on:
 
 - Manual forward propagation  
 - Manual backpropagation  
@@ -28,45 +28,38 @@ This project is built as a foundation for developing an adaptive, self-evolving 
 
 ---
 
-## 🧠 Current Version (v1)
+## 🧠 Version History
 
-Implemented features:
+The original standalone scripts (`neuroforage_v1.py` to `v4.py`) that explored the base mechanics are preserved unchanged in the `legacy/` directory for historical context. 
 
-- Fully Connected (Dense) layers  
-- He initialization  
-- ReLU activation  
-- Softmax + Cross Entropy loss  
-- Manual backpropagation  
-- Stochastic Gradient Descent (SGD)  
-- Accuracy tracking  
-- Training loss visualization  
-
-All gradients are derived and implemented manually using matrix operations.
+The current active framework lives in the `neuraforge/` Python package.
 
 ---
 
-## 🏗 Architecture (v1)
+## 🏗 Architecture
 
-Input → Dense → ReLU → Dense → Softmax → Cross Entropy Loss  
+Input → Dense → Activation → ... → Dense → Softmax + Cross Entropy Loss  
 
-Every forward and backward step is explicitly implemented.
+Every forward and backward step is explicitly implemented using pure NumPy matrix operations.
 
 ---
 
-## 📈 Sample Training Output
-Epoch 0, Loss: 0.9211, Accuracy: 0.5800
-Epoch 100, Loss: 0.9082, Accuracy: 0.5950
-Epoch 200, Loss: 0.8955, Accuracy: 0.6000
-...
-Epoch 900, Loss: 0.8214, Accuracy: 0.6450
+## 📈 Honest Extensions
 
-Training loss decreases steadily, confirming correct gradient flow and parameter updates.
+NeuraForge includes two custom extensions, which we benchmark rigorously against standard baselines (see `results/`):
+
+1. **ForageAct**: `f(z) = z·σ(z) + α·tanh(z)`
+   - When α = 0, this is exactly the SiLU/Swish activation function (Ramachandran et al., 2017).
+   - The α·tanh(z) term is a learnable extension (with fixed, scalar, or per-neuron modes) designed to add a sign-sensitive bias.
+2. **NeuroGrad**:
+   - An optimizer using Exponential Moving Average (EMA) momentum (`v = β·v + (1−β)·g`) and gradient-norm clipping (Pascanu et al., 2013).
+   - *Note on EMA vs Classical Momentum*: Without clipping, EMA momentum is mathematically identical to classical momentum (`v = β·v + g`) operating at an effective learning rate of `lr_effective = lr * (1 - β)`. Any performance differences observed between NeuroGrad and standard Momentum SGD in our benchmarks therefore stem entirely from the gradient clipping mechanism or the separately tuned learning rates.
 
 ---
 
 ## 🛠 Tech Stack
 
-- Python
+- Python >= 3.10
 - NumPy
 - Matplotlib
 
@@ -74,16 +67,13 @@ Training loss decreases steadily, confirming correct gradient flow and parameter
 
 ## 🚀 Roadmap
 
-Planned future versions:
-
-- Trainable activation function (ForageAct)
-- Custom optimizer (NeuroGrad++)
-- Dynamic neuron growth mechanism
-- Structured gradient-based pruning
-- Experimental benchmarking
-- Ablation studies
-
-The long-term objective is to develop NeuroForage into a self-adaptive neural architecture.
+- Phase 1: Package Structure (done)
+- Phase 2: Prove Correctness (gradient checking & Torch parity)
+- Phase 3: Real Benchmarks (Activation ablation & Optimizer comparison)
+- Phase 4: Adaptive Architecture (Neuron growth & Pruning)
+- Phase 5: Performance (float32 benchmarking)
+- Phase 6: Public Demo (Gradio deployment)
+- Phase 7: Docs & Polish
 
 ---
 

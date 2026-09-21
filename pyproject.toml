@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "neuraforge"
+version = "0.1.0"
+description = "Neural network framework from scratch in pure NumPy"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24,<3",
+    "matplotlib>=3.7,<4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4,<9",
+    "ruff>=0.4,<1",
+    "torch>=2.0,<3",
+]
