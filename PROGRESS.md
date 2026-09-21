@@ -1,6 +1,6 @@
 # NeuraForge — Progress Tracker
 
-## Phase 1: Package Structure — STATUS: IN PROGRESS
+## Phase 1: Package Structure — STATUS: DONE
 
 Refactor v1–v4 into `neuraforge/` package. Key components:
 - `layers.py` (Dense, Dropout)
@@ -26,7 +26,7 @@ Refactor v1–v4 into `neuraforge/` package. Key components:
 
 ---
 
-## Phase 2: Prove Correctness — SPEC (from original prompt)
+## Phase 2: Prove Correctness — STATUS: IN PROGRESS
 
 - `tests/test_gradcheck.py`: central finite-difference gradient checks for every layer, activation (including d/d-alpha for ForageAct), and loss, in float64, relative error < 1e-6.
 - `tests/test_torch_parity.py`: load identical weights into NeuraForge and an equivalent PyTorch model (with ForageAct written as a torch module); forward outputs and every gradient must match within 1e-6 for a 3-layer MLP.
