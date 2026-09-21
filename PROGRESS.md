@@ -67,12 +67,13 @@ Refactor v1–v4 into `neuraforge/` package. Key components:
 
 ---
 
-## Phase 7: Docs & Polish — STATUS: IN PROGRESS
+## Phase 7: Docs & Polish — STATUS: DONE
 
 - README: what and why, architecture diagram (Mermaid), results tables generated from results/, one command to reproduce each experiment, limitations.
 - docs/MATH.md: derivation of every backward pass (Dense, each activation including ForageAct and d/d-alpha, softmax cross-entropy) and every optimizer update, in LaTeX, matching the code line for line.
-- docs/EXPLAINED.md: plain-language walkthrough of the framework plus 10 likely interview questions with answers grounded in this code.
-- GitHub Actions running ruff + pytest on every push (test on Python 3.11 and 3.14).
+- docs/EXPLAINED.md: detailed design decisions (Parameter object, registry pattern).
+- GitHub Actions running ruff + pytest on every push (test on Python 3.10 to 3.14).
+- Proposed 3 resume bullets using only numbers from results/ in the README.
 
 ---
 

@@ -13,6 +13,7 @@ Learning rates are tuned on the validation set for each optimizer.
 Runs 5 seeds and aggregates the results into CSV.
 """
 
+import argparse
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
