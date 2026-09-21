@@ -52,14 +52,14 @@ Refactor v1–v4 into `neuraforge/` package. Key components:
 
 ---
 
-## Phase 5: Performance — STATUS: IN PROGRESS
+## Phase 5: Performance — STATUS: DONE
 
-- float32 path. Benchmark epoch time against PyTorch CPU on the same MLP and report it honestly (NumPy will likely be slower; explain why).
-- Optional stretch, only if approved: Conv2D via im2col, with gradient checks.
+- float32 vs float64 benchmark (`experiments/benchmark_performance.py`) against PyTorch CPU on the same MLP. Honest measurement of forward/backward time.
+- (Optional Conv2D stretch skipped for now to focus on core deliverables).
 
 ---
 
-## Phase 6: Public Demo — SPEC (from original prompt)
+## Phase 6: Public Demo — STATUS: IN PROGRESS
 
 - A Gradio app deployable free on Hugging Face Spaces: draw a digit and get the NumPy-only model's prediction with class probabilities, plus a tab showing training curves and the experiment tables read from results/. Include step-by-step deployment instructions.
 - User will push to HF themselves. Provide exact commands, never ask for tokens.
