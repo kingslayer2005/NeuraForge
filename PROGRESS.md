@@ -26,7 +26,7 @@ Refactor v1–v4 into `neuraforge/` package. Key components:
 
 ---
 
-## Phase 2: Prove Correctness — STATUS: IN PROGRESS
+## Phase 2: Prove Correctness — STATUS: DONE
 
 - `tests/test_gradcheck.py`: central finite-difference gradient checks for every layer, activation (including d/d-alpha for ForageAct), and loss, in float64, relative error < 1e-6.
 - `tests/test_torch_parity.py`: load identical weights into NeuraForge and an equivalent PyTorch model (with ForageAct written as a torch module); forward outputs and every gradient must match within 1e-6 for a 3-layer MLP.
@@ -35,7 +35,7 @@ Refactor v1–v4 into `neuraforge/` package. Key components:
 
 ---
 
-## Phase 3: Real Benchmarks — SPEC (from original prompt)
+## Phase 3: Real Benchmarks — STATUS: IN PROGRESS
 
 - Datasets: two-moons and spirals (for decision-boundary plots), MNIST and Fashion-MNIST (load via sklearn fetch_openml, cache as .npz in data/, gitignored).
 - Experiments in `experiments/`, results as CSV/JSON in `results/`, 5 seeds, mean ± std, the same epoch budget for every run, learning rate tuned per optimizer on validation only:
