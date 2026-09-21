@@ -1,0 +1,5 @@
+Precision,Framework,Time (ms/iter)
+float32,PyTorch (CPU),29.043896000366658
+float32,NeuraForge,200.1579249999486
+float64,PyTorch (CPU),28.157187999458984
+float64,NeuraForge,411.5871770004742

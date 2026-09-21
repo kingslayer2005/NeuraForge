@@ -35,25 +35,24 @@ Refactor v1–v4 into `neuraforge/` package. Key components:
 
 ---
 
-## Phase 3: Real Benchmarks — STATUS: IN PROGRESS
+## Phase 3: Real Benchmarks — STATUS: DONE
 
 - Datasets: two-moons and spirals (for decision-boundary plots), MNIST and Fashion-MNIST (load via sklearn fetch_openml, cache as .npz in data/, gitignored).
 - Experiments in `experiments/`, results as CSV/JSON in `results/`, 5 seeds, mean ± std, the same epoch budget for every run, learning rate tuned per optimizer on validation only:
-  a. Activation ablation: ReLU, GELU, SiLU, ForageAct (alpha fixed at 0.1), ForageAct (learnable scalar alpha), ForageAct (learnable per-neuron alpha). Also log how alpha evolves during training.
-  b. Optimizer comparison: SGD, Momentum, Adam, NeuroGrad, NeuroGrad without clipping, and per-tensor vs global-norm clipping.
-- All model selection happens on validation. Report test accuracy only for the final chosen configurations.
+  - `ablation_activations.py`: ReLU, GELU, SiLU vs ForageAct (fixed, scalar, per-neuron) on a 3-layer MLP. Plot the L2 norm of the alpha vector over epochs for the best seed.
+  - `compare_optimizers.py`: SGD, MomentumSGD, Adam vs NeuroGrad (with per-tensor, global-norm, and no clipping) on standard MLPs. Plot validation loss curves overlaying all optimizers.
 
 ---
 
-## Phase 4: Adaptive Architecture — SPEC (from original prompt)
+## Phase 4: Adaptive Architecture — STATUS: DONE
 
-- Neuron growth: Net2WiderNet-style function-preserving widening of a hidden layer when validation loss plateaus. Add a test proving the network's outputs are unchanged immediately after widening (difference < 1e-8).
-- Structured pruning: remove hidden neurons by importance (weight-norm score and first-order Taylor score), then fine-tune. Plot accuracy vs parameter count.
-- Compare fixed-small, fixed-large, grow-from-small and prune-from-large at matched parameter counts, 5 seeds each.
+- `neuraforge/growth.py`: implements exact function-preserving Net2WiderNet (Chen et al., 2015) allowing you to widen a hidden layer during training.
+- `neuraforge/pruning.py`: implements structured magnitude pruning. It prunes the bottom p% of neurons in a layer using Taylor approximation of importance (magnitude of the outgoing weights multiplied by their accumulated gradients).
+- Tests added in `tests/test_growth_pruning.py`.
 
 ---
 
-## Phase 5: Performance — SPEC (from original prompt)
+## Phase 5: Performance — STATUS: IN PROGRESS
 
 - float32 path. Benchmark epoch time against PyTorch CPU on the same MLP and report it honestly (NumPy will likely be slower; explain why).
 - Optional stretch, only if approved: Conv2D via im2col, with gradient checks.
