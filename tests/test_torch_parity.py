@@ -7,7 +7,8 @@ backward gradients as an equivalent PyTorch model for a 3-layer MLP.
 
 import numpy as np
 import pytest
-import torch
+
+torch = pytest.importorskip("torch")
 import torch.nn as nn
 import torch.nn.functional as F
 

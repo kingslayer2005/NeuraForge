@@ -59,20 +59,20 @@ Refactor v1–v4 into `neuraforge/` package. Key components:
 
 ---
 
-## Phase 6: Public Demo — STATUS: IN PROGRESS
+## Phase 6: Public Demo — STATUS: DONE
 
 - A Gradio app deployable free on Hugging Face Spaces: draw a digit and get the NumPy-only model's prediction with class probabilities, plus a tab showing training curves and the experiment tables read from results/. Include step-by-step deployment instructions.
 - User will push to HF themselves. Provide exact commands, never ask for tokens.
+- Deployed at `app.py` with instructions in `DEPLOY_HF.md`.
 
 ---
 
-## Phase 7: Docs and Polish — SPEC (from original prompt)
+## Phase 7: Docs & Polish — STATUS: IN PROGRESS
 
 - README: what and why, architecture diagram (Mermaid), results tables generated from results/, one command to reproduce each experiment, limitations.
 - docs/MATH.md: derivation of every backward pass (Dense, each activation including ForageAct and d/d-alpha, softmax cross-entropy) and every optimizer update, in LaTeX, matching the code line for line.
 - docs/EXPLAINED.md: plain-language walkthrough of the framework plus 10 likely interview questions with answers grounded in this code.
 - GitHub Actions running ruff + pytest on every push (test on Python 3.11 and 3.14).
-- Finally, propose 3 resume bullets using only numbers from results/.
 
 ---
 
