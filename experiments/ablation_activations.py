@@ -86,13 +86,12 @@ def run_experiment(dataset_name: str, n_seeds: int = 5, epochs: int = 50) -> pd.
     # Standard 10-class one-hot
     Y = np.eye(10)[y]
     
-    # We'll use a subset to keep the experiment runtime reasonable for 5 seeds * 6 acts * 3 LRs = 90 runs
-    # 20k samples is enough to see learning differences without taking hours on CPU
-    subset_size = 20000
-    if X.shape[0] > subset_size:
-        np.random.seed(42)
-        idx = np.random.choice(X.shape[0], subset_size, replace=False)
-        X, Y = X[idx], Y[idx]
+    # Use full dataset
+    # subset_size = 20000
+    # if X.shape[0] > subset_size:
+    #     np.random.seed(42)
+    #     idx = np.random.choice(X.shape[0], subset_size, replace=False)
+    #     X, Y = X[idx], Y[idx]
 
     activations = ["ReLU", "GELU", "SiLU", "ForageAct_Fixed", "ForageAct_Scalar", "ForageAct_PerNeuron"]
     learning_rates = [0.05, 0.01, 0.005]  # Tune LR for each activation

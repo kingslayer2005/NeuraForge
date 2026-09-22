@@ -79,11 +79,20 @@ with gr.Blocks(title="NeuraForge Demo") as demo:
     
     with gr.Tabs():
         with gr.TabItem("Interactive Demo"):
-            gr.Markdown("### Draw a digit (0-9) to see real-time inference using our custom NumPy framework.")
+            acc_text = ""
+            acc_path = Path(__file__).parent.parent / "results" / "demo_model_acc.json"
+            if acc_path.exists():
+                import json
+                with open(acc_path, "r") as f:
+                    data = json.load(f)
+                    acc_text = f" **(Test Accuracy: {data['accuracy']*100:.2f}%)**"
+
+            gr.Markdown(f"### Draw a digit (0-9) to see real-time inference using our custom NumPy framework.{acc_text}")
+            gr.Markdown("Currently loading: `results/demo_model.npz`")
             with gr.Row():
                 with gr.Column():
                     # Gradio 4 Sketchpad
-                    sketchpad = gr.Sketchpad(label="Draw here", type="numpy", crop_size=(28,28))
+                    sketchpad = gr.Sketchpad(label="Draw here", type="numpy")
                     btn = gr.Button("Predict")
                 with gr.Column():
                     label = gr.Label(num_top_classes=3)

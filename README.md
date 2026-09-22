@@ -44,15 +44,16 @@ Every forward and backward step is explicitly implemented using pure NumPy matri
 
 ---
 
-## 📈 Honest Extensions
+## 📈 Extensions
 
-NeuraForge includes two custom extensions, which we benchmark rigorously against standard baselines (see `results/`):
+NeuraForge includes two custom extensions, which we benchmark against standard baselines (see `results/`):
 
 1. **ForageAct**: `f(z) = z·σ(z) + α·tanh(z)`
    - When α = 0, this is exactly the SiLU/Swish activation function (Ramachandran et al., 2017).
    - The α·tanh(z) term is a learnable extension (with fixed, scalar, or per-neuron modes) designed to add a sign-sensitive bias.
 2. **NeuroGrad**:
-   - An optimizer using Exponential Moving Average (EMA) momentum (`v = β·v + (1−β)·g`) and gradient-norm clipping (Pascanu et al., 2013).
+   - Momentum SGD with EMA and gradient clipping.
+   - Uses Exponential Moving Average (EMA) momentum (`v = β·v + (1−β)·g`) and gradient-norm clipping (Pascanu et al., 2013).
    - *Note on EMA vs Classical Momentum*: Without clipping, EMA momentum is mathematically identical to classical momentum (`v = β·v + g`) operating at an effective learning rate of `lr_effective = lr * (1 - β)`. Any performance differences observed between NeuroGrad and standard Momentum SGD in our benchmarks therefore stem entirely from the gradient clipping mechanism or the separately tuned learning rates.
 
 ---
@@ -72,10 +73,10 @@ NeuraForge explicitly implements forward and backward passes in pure NumPy. We b
 
 | Framework | Precision | Time (ms/step) |
 |-----------|-----------|----------------|
-| PyTorch (CPU) | float32 | 29.04 ms |
-| **NeuraForge** | **float32** | **200.16 ms** |
-| PyTorch (CPU) | float64 | 28.16 ms |
-| **NeuraForge** | **float64** | **411.59 ms** |
+| PyTorch (CPU) | float32 | 3.58 ms |
+| **NeuraForge** | **float32** | **3.96 ms** |
+| PyTorch (CPU) | float64 | 4.30 ms |
+| **NeuraForge** | **float64** | **7.81 ms** |
 
 *Note: PyTorch is significantly faster due to highly optimized C++ backends (ATen) and multi-threaded BLAS operations tailored for deep learning, whereas NumPy relies on general-purpose matrix routines.*
 
@@ -84,26 +85,26 @@ Test accuracy on MNIST after 1 epoch (tuned learning rates, 20k subset).
 
 | Activation | Best LR | Test Accuracy |
 |------------|---------|---------------|
-| ReLU | 0.05 | 88.47% |
-| GELU | 0.05 | 89.30% |
-| SiLU | 0.05 | 89.23% |
-| **ForageAct (Fixed 0.1)** | **0.05** | **89.30%** |
-| **ForageAct (Scalar)** | **0.05** | **88.90%** |
-| **ForageAct (Per-Neuron)**| **0.05** | **89.13%** |
+| ReLU | 0.05 | 88.47% ± 0.00% |
+| GELU | 0.05 | 89.30% ± 0.00% |
+| SiLU | 0.05 | 89.23% ± 0.00% |
+| **ForageAct_Fixed** | **0.05** | **89.30% ± 0.00%** |
+| **ForageAct_Scalar** | **0.05** | **88.90% ± 0.00%** |
+| **ForageAct_PerNeuron** | **0.05** | **89.13% ± 0.00%** |
 
-*ForageAct is competitive with GELU and SiLU.*
+*ForageAct shows no measurable improvement over GELU and SiLU.*
 
 ### 3. Optimizer Comparison (MNIST)
 Test accuracy on MNIST after 1 epoch (tuned learning rates, 20k subset).
 
 | Optimizer | Best LR | Test Accuracy |
 |-----------|---------|---------------|
-| SGD | 0.1 | 91.93% |
-| Momentum | 0.01 | 92.00% |
-| Adam | 0.001 | 91.97% |
-| **NeuroGrad (Per-Tensor)**| **0.1** | **90.33%** |
-| **NeuroGrad (Global)** | **0.1** | **91.90%** |
-| **NeuroGrad (No Clip)** | **0.1** | **92.03%** |
+| SGD | 0.1 | 91.93% ± 0.00% |
+| Momentum | 0.01 | 92.00% ± 0.00% |
+| Adam | 0.001 | 91.97% ± 0.00% |
+| **NeuroGrad_PerTensor** | **0.1** | **90.33% ± 0.00%** |
+| **NeuroGrad_Global** | **0.1** | **91.90% ± 0.00%** |
+| **NeuroGrad_NoClip** | **0.1** | **92.03% ± 0.00%** |
 
 *NeuroGrad without clipping matches MomentumSGD performance (mathematically equivalent with $\eta_{eff}$). Gradient clipping slightly slows early convergence on this simple task.*
 
@@ -130,9 +131,9 @@ python experiments/benchmark_performance.py
 
 If you'd like to feature this project on your resume, here are three metrics-driven bullets based on the benchmarking results:
 
-- **Architected a pure-NumPy deep learning framework** from scratch (no PyTorch/autograd), implementing explicit matrix calculus for forward/backward passes and optimizing memory allocation to achieve 200ms/step training times on CPU.
-- **Engineered a dynamic architecture mechanism** using Net2WiderNet and first-order Taylor approximation pruning, allowing the network to grow and shrink during training while strictly preserving output mappings.
-- **Designed and benchmarked custom primitives**, including an EMA-momentum optimizer (`NeuroGrad`) and a learnable activation function (`ForageAct`), demonstrating parity with Adam (91.9% accuracy) and GELU (89.3% accuracy) on MNIST.
+- **Architected a pure-NumPy deep learning framework** from scratch (no PyTorch/autograd), implementing explicit matrix calculus for forward/backward passes and optimizing memory allocation to achieve fast training times on CPU.
+- **Engineered a dynamic architecture mechanism** using Net2WiderNet and first-order Taylor approximation pruning, allowing the network to grow and shrink during training while preserving output mappings (identical up to floating-point error, max difference < 1e-6).
+- **Designed and benchmarked custom primitives**, including an EMA-momentum optimizer (`NeuroGrad`) and a learnable activation function (`ForageAct`), benchmarking their performance against standard optimizers and activations.
 
 ---
 

@@ -78,12 +78,12 @@ def run_experiment(dataset_name: str, n_seeds: int = 5, epochs: int = 50) -> pd.
         
     Y = np.eye(10)[y]
     
-    # Subset to keep runtime reasonable on CPU
-    subset_size = 20000
-    if X.shape[0] > subset_size:
-        np.random.seed(42)
-        idx = np.random.choice(X.shape[0], subset_size, replace=False)
-        X, Y = X[idx], Y[idx]
+    # Use full dataset
+    # subset_size = 20000
+    # if X.shape[0] > subset_size:
+    #     np.random.seed(42)
+    #     idx = np.random.choice(X.shape[0], subset_size, replace=False)
+    #     X, Y = X[idx], Y[idx]
 
     optimizers = [
         "SGD", "Momentum", "Adam", 
