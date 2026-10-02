@@ -28,7 +28,7 @@ jobs:
         pip install ruff pytest numpy matplotlib
         # Torch installation might fail on unreleased pythons like 3.14, 
         # so we ignore failures and conditionally skip torch tests if missing
-        pip install torch --index-url https://download.pytorch.org/whl/cpu || echo "Torch installation failed, will skip torch tests"
+        pip install torch --extra-index-url https://download.pytorch.org/whl/cpu || echo "Torch installation failed, will skip torch tests"
         
     - name: Lint with Ruff
       run: |

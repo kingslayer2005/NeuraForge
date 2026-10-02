@@ -14,35 +14,38 @@ from neuraforge.io import load_model
 from neuraforge.transformer import DecoderTransformer
 from experiments.train_shakespeare import CharTokenizer, download_tiny_shakespeare
 
-# Load MNIST model
-model_path = Path(__file__).parent / "results" / "demo_model.npz"
-if model_path.exists():
-    model = load_model(str(model_path))
-else:
-    model = Sequential(Dense(784, 128), ReLU(), Dense(128, 128), ReLU(), Dense(128, 10))
+_model = None
+def get_mnist_model():
+    global _model
+    if _model is None:
+        model_path = Path(__file__).parent / "results" / "demo_model.npz"
+        if model_path.exists():
+            _model = load_model(str(model_path))
+        else:
+            _model = Sequential(Dense(784, 128), ReLU(), Dense(128, 128), ReLU(), Dense(128, 10))
+    return _model
 
-# Load Transformer model and Tokenizer
-transformer_path = Path(__file__).parent / "results" / "shakespeare" / "best_model.npz"
-text_cache = Path(__file__).parent / "data" / "tiny_shakespeare.txt"
-
-tokenizer = None
-transformer_model = None
-
-if text_cache.exists():
-    with open(text_cache, "r", encoding="utf-8") as f:
-        text = f.read()
-    tokenizer = CharTokenizer(text)
-    
-    if transformer_path.exists():
-        # Initialize the same model as in train_shakespeare
-        transformer_model = DecoderTransformer(
-            vocab_size=tokenizer.vocab_size, d_model=64, n_heads=2,
-            n_layers=1, d_ff=256, max_seq_len=32
-        )
-        from neuraforge.io import set_weights
-        weights = np.load(transformer_path, allow_pickle=True)
-        weights_dict = {k: v for k, v in weights.items() if k != "__config__"}
-        set_weights(transformer_model, weights_dict)
+_tokenizer = None
+_transformer = None
+def get_transformer_model():
+    global _tokenizer, _transformer
+    if _tokenizer is None:
+        text_cache = Path(__file__).parent / "data" / "tiny_shakespeare.txt"
+        if text_cache.exists():
+            with open(text_cache, "r", encoding="utf-8") as f:
+                _tokenizer = CharTokenizer(f.read())
+        
+        transformer_path = Path(__file__).parent / "results" / "shakespeare" / "best_model.npz"
+        if _tokenizer and transformer_path.exists():
+            _transformer = DecoderTransformer(
+                vocab_size=_tokenizer.vocab_size, d_model=64, n_heads=2,
+                n_layers=1, d_ff=256, max_seq_len=32
+            )
+            from neuraforge.io import set_weights
+            weights = np.load(transformer_path, allow_pickle=True)
+            weights_dict = {k: v for k, v in weights.items() if k != "__config__"}
+            set_weights(_transformer, weights_dict)
+    return _transformer, _tokenizer
 
 def predict_digit(image):
     if image is None: return {str(i): 0.0 for i in range(10)}
@@ -65,6 +68,7 @@ def predict_digit(image):
     img = (img - MNIST_MEAN) / MNIST_STD
     
     X = img.reshape(1, 784)
+    model = get_mnist_model()
     logits = model.forward(X, training=False)
     
     exp_logits = np.exp(logits - np.max(logits, axis=1, keepdims=True))
@@ -72,6 +76,7 @@ def predict_digit(image):
     return {str(i): float(probs[0][i]) for i in range(10)}
 
 def generate_text(prompt, max_tokens, temperature):
+    transformer_model, tokenizer = get_transformer_model()
     if transformer_model is None or tokenizer is None:
         return "Model not found. Run train_shakespeare.py first.", None
 
