@@ -1,0 +1,6 @@
+{
+  "cpu_model": "Haswell",
+  "ram_gb": 15.730339050292969,
+  "blas_backend": "blas",
+  "blas_threads": 4
+}

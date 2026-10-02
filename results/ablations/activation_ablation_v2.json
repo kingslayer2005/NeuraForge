@@ -1,0 +1,90 @@
+{
+  "MNIST": {
+    "ReLU": {
+      "best_lr": 0.001,
+      "acc_mean": 0.967,
+      "acc_ci95": 0.0009,
+      "params": 118282
+    },
+    "GELU": {
+      "best_lr": 0.001,
+      "acc_mean": 0.9688,
+      "acc_ci95": 0.0005,
+      "params": 118282
+    },
+    "SiLU": {
+      "best_lr": 0.001,
+      "acc_mean": 0.9695,
+      "acc_ci95": 0.0013,
+      "params": 118282
+    },
+    "Mish": {
+      "best_lr": 0.001,
+      "acc_mean": 0.9691,
+      "acc_ci95": 0.001,
+      "params": 118282
+    },
+    "PReLU": {
+      "best_lr": 0.003,
+      "acc_mean": 0.9661,
+      "acc_ci95": 0.001,
+      "params": 118538
+    },
+    "SwishLearned": {
+      "best_lr": 0.001,
+      "acc_mean": 0.9697,
+      "acc_ci95": 0.0008,
+      "params": 118538
+    },
+    "ForageAct": {
+      "best_lr": 0.001,
+      "acc_mean": 0.9689,
+      "acc_ci95": 0.0012,
+      "params": 118538
+    }
+  },
+  "Fashion-MNIST": {
+    "ReLU": {
+      "best_lr": 0.001,
+      "acc_mean": 0.8770285714285715,
+      "acc_ci95": 0.0022958634105712853,
+      "params": 118282
+    },
+    "GELU": {
+      "best_lr": 0.001,
+      "acc_mean": 0.8796857142857142,
+      "acc_ci95": 0.0012656495565519033,
+      "params": 118282
+    },
+    "SiLU": {
+      "best_lr": 0.001,
+      "acc_mean": 0.8803714285714286,
+      "acc_ci95": 0.004168597270065787,
+      "params": 118282
+    },
+    "Mish": {
+      "best_lr": 0.003,
+      "acc_mean": 0.8800857142857144,
+      "acc_ci95": 0.0018139159848239998,
+      "params": 118282
+    },
+    "PReLU": {
+      "best_lr": 0.003,
+      "acc_mean": 0.8776285714285714,
+      "acc_ci95": 0.004937282167346703,
+      "params": 118538
+    },
+    "SwishLearned": {
+      "best_lr": 0.003,
+      "acc_mean": 0.8769142857142856,
+      "acc_ci95": 0.0031545451653130796,
+      "params": 118538
+    },
+    "ForageAct": {
+      "best_lr": 0.003,
+      "acc_mean": 0.8756285714285713,
+      "acc_ci95": 0.0040942089834301535,
+      "params": 118538
+    }
+  }
+}

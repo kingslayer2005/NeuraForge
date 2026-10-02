@@ -1,0 +1,86 @@
+{
+  "_description": "Pre-audit snapshot of NeuraForge state. Reconstructed from git history (commit 96929e5 and earlier), results files in results/activation_ablation/ and results/optimizer_comparison/, and verification_report.md Phase 4 output. This captures the state before any fixes were applied.",
+  "_reconstruction_note": "The original pre-fix state was never formally captured as a JSON snapshot at the time. This file was reconstructed after the fact from surviving artifacts. Entries marked 'source' indicate where each data point came from.",
+
+  "autograd_engine": {
+    "status": "partially_broken",
+    "source": "docs/verification_report.md Phase 3",
+    "findings": {
+      "basic_ops": "all PASS (add, sub, mul, div, matmul, sum, mean, exp, log, pow)",
+      "reshape": "FAIL — 1.00e+08 relative error (later found to be a harness bug, not an engine bug)",
+      "transpose": "FAIL — 1.00e+08 relative error (later found to be a harness bug, not an engine bug)",
+      "diamond_test": "PASS",
+      "broadcasting": "all 22 shape pairs PASS for add/sub/mul/div",
+      "softmax_stability": "PASS — inputs up to ~1000",
+      "log_softmax_vs_scipy": "4.82e-14"
+    }
+  },
+
+  "pytorch_parity": {
+    "source": "docs/verification_report.md Phase 4",
+    "results": {
+      "Dense_10_to_20":        {"fwd": "3.93e-07", "bwd": "9.91e-07", "status": "PASS"},
+      "Dropout_eval":          {"fwd": "0.00e+00", "bwd": "N/A",      "status": "PASS"},
+      "Embedding_100_to_16":   {"fwd": "3.59e-09", "bwd": "5.96e-07", "status": "PASS"},
+      "Conv2d_s1_p0":          {"fwd": "8.68e-07", "bwd": "1.79e-06", "status": "PASS"},
+      "Conv2d_s2_p0":          {"fwd": "9.94e-07", "bwd": "5.62e-07", "status": "PASS"},
+      "Conv2d_s1_p1":          {"fwd": "8.11e-07", "bwd": "2.30e-06", "status": "PASS"},
+      "Conv2d_s2_p1":          {"fwd": "8.28e-07", "bwd": "5.88e-07", "status": "PASS"},
+      "MaxPool2d_2x2":         {"fwd": "0.00e+00", "bwd": "0.00e+00", "status": "PASS"},
+      "BatchNorm1d_train":     {"fwd": "3.58e-07", "bwd": "4.62e-07", "status": "PASS"},
+      "BatchNorm1d_eval":      {"fwd": "1.15e+01", "bwd": "7.72e+00", "status": "FAIL"},
+      "BatchNorm2d_train":     {"fwd": "4.77e-07", "bwd": "4.88e-07", "status": "PASS"},
+      "BatchNorm2d_eval":      {"fwd": "1.29e+01", "bwd": "9.80e+00", "status": "FAIL"},
+      "LayerNorm":             {"fwd": "4.77e-07", "bwd": "6.49e-07", "status": "PASS"},
+      "MultiHeadAttention":    {"fwd": "N/A",      "bwd": "N/A",      "status": "NOT_TESTED"}
+    }
+  },
+
+  "training_claims": {
+    "transformer": {
+      "status": "FABRICATED",
+      "source": "docs/verification_report.md Phase 5",
+      "detail": "Script train_shakespeare.py existed but was never run. results/shakespeare/ directory did not exist. No training artifacts, no loss curves, no generated text."
+    },
+    "cnn_accuracy": {
+      "claimed": "96.64%",
+      "source": "results/demo_model_acc.json",
+      "detail": "This accuracy was from an MLP, not a CNN. The CNN had never been trained."
+    }
+  },
+
+  "ablations_pre_fix": {
+    "source": "results/activation_ablation/MNIST/summary.csv and results/optimizer_comparison/MNIST/summary.csv",
+    "protocol": "single seed (std = 0.0), fixed LR (not swept), no validation split for tuning",
+    "activation_results": {
+      "ReLU":                {"lr": 0.05, "acc_mean": 0.8847, "acc_std": 0.0, "seeds": 1},
+      "GELU":                {"lr": 0.05, "acc_mean": 0.8930, "acc_std": 0.0, "seeds": 1},
+      "SiLU":                {"lr": 0.05, "acc_mean": 0.8923, "acc_std": 0.0, "seeds": 1},
+      "ForageAct_Fixed":     {"lr": 0.05, "acc_mean": 0.8930, "acc_std": 0.0, "seeds": 1},
+      "ForageAct_Scalar":    {"lr": 0.05, "acc_mean": 0.8890, "acc_std": 0.0, "seeds": 1},
+      "ForageAct_PerNeuron": {"lr": 0.05, "acc_mean": 0.8913, "acc_std": 0.0, "seeds": 1}
+    },
+    "optimizer_results": {
+      "SGD":                   {"lr": 0.10,  "acc_mean": 0.9193, "acc_std": 0.0, "seeds": 1},
+      "Momentum":              {"lr": 0.01,  "acc_mean": 0.9200, "acc_std": 0.0, "seeds": 1},
+      "Adam":                  {"lr": 0.001, "acc_mean": 0.9197, "acc_std": 0.0, "seeds": 1},
+      "NeuroGrad_PerTensor":   {"lr": 0.10,  "acc_mean": 0.9033, "acc_std": 0.0, "seeds": 1},
+      "NeuroGrad_Global":      {"lr": 0.10,  "acc_mean": 0.9190, "acc_std": 0.0, "seeds": 1},
+      "NeuroGrad_NoClip":      {"lr": 0.10,  "acc_mean": 0.9203, "acc_std": 0.0, "seeds": 1}
+    },
+    "why_invalid": "All activations used the same fixed LR=0.05. Optimizer comparison used fixed LRs (SGD=0.1, Adam=0.001, NeuroGrad=0.1) without sweeping. Single seed means zero statistical power. The comparison was structurally unfair in both directions."
+  },
+
+  "scaling_claim_pre_fix": {
+    "original_claim": "NeuraForge achieves 3.96 ms/step compared to PyTorch's 3.58 ms/step — almost as fast",
+    "source": "results/performance/benchmark.csv",
+    "why_invalid": "Measured on a tiny MLP where both frameworks dispatch to the same BLAS backend. The comparison measured BLAS against BLAS, not framework against framework."
+  },
+
+  "test_suite": {
+    "total_tests": 152,
+    "passed": 151,
+    "failed": 1,
+    "failed_test": "test_readme_matches_results — README was out of sync with performance numbers"
+  }
+}

@@ -92,5 +92,49 @@ def load_mnist() -> tuple[np.ndarray, np.ndarray]:
 
 
 def load_fashion_mnist() -> tuple[np.ndarray, np.ndarray]:
-    """Load Fashion-MNIST dataset (70,000 samples, 784 features, 10 classes)."""
-    return fetch_and_cache_openml("Fashion-MNIST", version=1, cache_name="fashion_mnist")
+    """Load Fashion-MNIST dataset directly from Zalando repo."""
+    data_dir = get_data_dir()
+    cache_path = data_dir / "fashion_mnist.npz"
+    if cache_path.exists():
+        print("Loading fashion_mnist from cache...")
+        data = np.load(cache_path, allow_pickle=True)
+        return data["X"], data["y"]
+        
+    print("Downloading fashion_mnist directly from Zalando GitHub...")
+    import gzip
+    import urllib.request
+    
+    base_url = "https://github.com/zalandoresearch/fashion-mnist/raw/master/data/fashion/"
+    files = [
+        "train-images-idx3-ubyte.gz",
+        "train-labels-idx1-ubyte.gz",
+        "t10k-images-idx3-ubyte.gz",
+        "t10k-labels-idx1-ubyte.gz"
+    ]
+    
+    arrays = []
+    for f in files:
+        url = base_url + f
+        path = data_dir / f
+        if not path.exists():
+            print(f"  Downloading {f}...")
+            urllib.request.urlretrieve(url, path)
+        
+        with gzip.open(path, 'rb') as gz:
+            if 'images' in f:
+                gz.read(16)
+                buf = gz.read()
+                data = np.frombuffer(buf, dtype=np.uint8).reshape(-1, 28, 28)
+                arrays.append(data.reshape(-1, 784))
+            else:
+                gz.read(8)
+                buf = gz.read()
+                data = np.frombuffer(buf, dtype=np.uint8)
+                arrays.append(data)
+                
+    X_train, y_train, X_test, y_test = arrays
+    X = np.concatenate([X_train, X_test], axis=0).astype(np.float64)
+    y = np.concatenate([y_train, y_test], axis=0).astype(np.int64)
+    
+    np.savez_compressed(cache_path, X=X, y=y)
+    return X, y

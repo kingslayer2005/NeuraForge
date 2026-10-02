@@ -1,0 +1,17 @@
+{
+  "total_params": 14848,
+  "total_time_seconds": 1132.9756376743317,
+  "best_val_loss": 2.1033460251867266,
+  "final_train_loss": 1.9438020039679766,
+  "config": {
+    "d_model": 32,
+    "n_heads": 2,
+    "n_layers": 1,
+    "d_ff": 128,
+    "max_seq_len": 32,
+    "batch_size": 32,
+    "seq_len": 32,
+    "learning_rate": 0.003,
+    "max_steps": 1500
+  }
+}

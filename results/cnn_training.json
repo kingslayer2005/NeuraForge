@@ -1,0 +1,16 @@
+{
+  "architecture": "Conv(1->8, 3x3, pad=1) -> ReLU -> MaxPool(2x2) -> Conv(8->16, 3x3, pad=1) -> ReLU -> MaxPool(2x2) -> Dense(784, 128) -> ReLU -> Dense(128, 10)",
+  "optimizer": "Adam",
+  "learning_rate": 0.001,
+  "batch_size": 128,
+  "early_stopping_patience": 3,
+  "early_stopping_triggered_at_epoch": 11,
+  "epochs_run": 12,
+  "max_epochs": 15,
+  "test_accuracy": 0.9847,
+  "best_val_accuracy": 0.9847,
+  "per_epoch_history": {
+    "train_acc": [0.9074, 0.9713, 0.9809, 0.9848, 0.9883, 0.9902, 0.9921, 0.9926, 0.9929, 0.9944, 0.9957, 0.9955],
+    "val_acc":   [0.9549, 0.9727, 0.9743, 0.9797, 0.9823, 0.9819, 0.9817, 0.9836, 0.9847, 0.9829, 0.9817, 0.9846]
+  }
+}
