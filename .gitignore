@@ -1,18 +1,13 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-*.eggs/
-.eggs/
-
-# Distribution / packaging
-build/
-dist/
-*.egg-info/
-.venv/
-
-# Project specifics
 data/
+__pycache__/
+*.pyc
+*.gz
 *.npz
-experiments/**/*.npz
-results/**/*.npz
+checkpoints/
+.pytest_cache/
+.venv-dev/
+profile.txt
+*.egg-info/
+dist/
+build/
+.env
