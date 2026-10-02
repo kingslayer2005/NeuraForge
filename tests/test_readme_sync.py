@@ -14,4 +14,4 @@ def test_readme_matches_results():
         readme_content = f.read()
 
     # Ensure the README contains a Current status section, representing honest reporting
-    assert "Current status" in readme_content, "README must contain a 'Current status' section."
+    assert "Current Status" in readme_content, "README must contain a 'Current Status' section."

@@ -36,8 +36,8 @@ if text_cache.exists():
     if transformer_path.exists():
         # Initialize the same model as in train_shakespeare
         transformer_model = DecoderTransformer(
-            vocab_size=tokenizer.vocab_size, d_model=32, n_heads=2,
-            n_layers=1, d_ff=128, max_seq_len=32
+            vocab_size=tokenizer.vocab_size, d_model=64, n_heads=2,
+            n_layers=1, d_ff=256, max_seq_len=32
         )
         from neuraforge.io import set_weights
         weights = np.load(transformer_path, allow_pickle=True)
