@@ -5,16 +5,23 @@ Validates forward/backward correctness via numerical gradient checks.
 All checks in float64 with rtol < 1e-6.
 """
 
+import sys
+from pathlib import Path
+
 import numpy as np
 import pytest
 
-import sys
-from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from neuraforge.nn import (
-    Dense, Conv2d, MaxPool2d, BatchNorm1d, BatchNorm2d,
-    LayerNorm, Dropout, Embedding, ReLU, GELU, SiLU, ForageAct,
+    BatchNorm1d,
+    Conv2d,
+    Dense,
+    Dropout,
+    Embedding,
+    ForageAct,
+    LayerNorm,
+    MaxPool2d,
 )
 from neuraforge.seed import seed_everything
 
@@ -247,7 +254,7 @@ class TestEmbedding:
         """Same index used twice should accumulate gradient."""
         emb = Embedding(5, 3)
         indices = np.array([1, 1, 3])
-        out = emb.forward(indices)
+        _ = emb.forward(indices)
         d_out = np.ones((3, 3), dtype=np.float64)
         emb.backward(d_out)
 

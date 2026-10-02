@@ -25,10 +25,9 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import numpy as np
 
+from neuraforge.optimizers import Adam
 from neuraforge.seed import seed_everything
 from neuraforge.transformer import DecoderTransformer
-from neuraforge.optimizers import Adam
-from neuraforge.layers import Parameter
 
 
 # ===================================================================

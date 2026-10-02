@@ -6,17 +6,18 @@ on both NeuraForge and PyTorch. Honest measurement of forward/backward time.
 """
 
 import time
-import numpy as np
-import torch
-import torch.nn as nn
-import pandas as pd
 from pathlib import Path
-import matplotlib.pyplot as plt
 
-from neuraforge.model import Sequential
-from neuraforge.layers import Dense
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import torch
+from torch import nn
+
 from neuraforge.activations import ReLU
+from neuraforge.layers import Dense
 from neuraforge.losses import SoftmaxCrossEntropy
+from neuraforge.model import Sequential
 from neuraforge.seed import seed_everything
 
 

@@ -9,7 +9,7 @@ All checks are performed in float64 for maximum precision.
 import numpy as np
 import pytest
 
-from neuraforge.activations import GELU, LeakyReLU, ReLU, Sigmoid, SiLU, Tanh, ForageAct
+from neuraforge.activations import GELU, ForageAct, LeakyReLU, ReLU, Sigmoid, SiLU, Tanh
 from neuraforge.layers import Dense
 from neuraforge.losses import BCEWithLogitsLoss, MSELoss, SoftmaxCrossEntropy
 from neuraforge.seed import seed_everything
@@ -81,7 +81,7 @@ def test_dense_gradients():
     layer.b.data = layer.b.data.astype(np.float64)
     
     # 1. Forward and analytical backward
-    out = layer.forward(X)
+    _ = layer.forward(X)
     d_input = layer.backward(d_out)
     dW = layer.W.grad
     db = layer.b.grad
@@ -129,7 +129,7 @@ def test_activation_gradients(ActClass, kwargs):
     
     act = ActClass(**kwargs)
     
-    out = act.forward(X)
+    act.forward(X)
     d_input = act.backward(d_out)
     
     def func_X(x_val):

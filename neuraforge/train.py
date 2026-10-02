@@ -2,7 +2,7 @@
 train.py — Training loops and evaluation utilities.
 """
 
-from typing import Any, Dict, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -29,7 +29,7 @@ class EarlyStopping:
         self.min_delta: float = min_delta
         self.best_loss: float = float("inf")
         self.counter: int = 0
-        self.best_weights: Dict[str, np.ndarray] | None = None
+        self.best_weights: dict[str, np.ndarray] | None = None
 
     def __call__(self, val_loss: float, model: Any) -> bool:
         """Check if training should stop.
@@ -55,9 +55,7 @@ class EarlyStopping:
             return False
 
         self.counter += 1
-        if self.counter >= self.patience:
-            return True
-        return False
+        return self.counter >= self.patience
 
     def restore_best_weights(self, model: Any) -> None:
         """Restore the model to the state with the best validation loss."""
@@ -91,7 +89,7 @@ def evaluate(
     model: Any,
     loss_fn: Any,
     data_loader: DataLoader,
-) -> Tuple[float, float]:
+) -> tuple[float, float]:
     """Evaluate the model on a dataset.
 
     Parameters
@@ -145,7 +143,7 @@ def fit(
     epochs: int = 100,
     early_stopping: EarlyStopping | None = None,
     verbose: bool = True,
-) -> Dict[str, list]:
+) -> dict[str, list]:
     """Train the model for a given number of epochs.
 
     Parameters
@@ -222,16 +220,14 @@ def fit(
             history["val_acc"].append(val_acc)
 
             # Check early stopping
-            if early_stopping is not None:
-                if early_stopping(val_loss, model):
+            if early_stopping is not None and early_stopping(val_loss, model):
                     if verbose:
                         print(f"Early stopping triggered at epoch {epoch}")
                     break
         else:
             val_loss, val_acc = None, None
             # If no val set, early stopping uses train loss
-            if early_stopping is not None:
-                if early_stopping(train_loss, model):
+            if early_stopping is not None and early_stopping(train_loss, model):
                     if verbose:
                         print(f"Early stopping triggered at epoch {epoch}")
                     break

@@ -10,9 +10,9 @@ import numpy as np
 import pytest
 
 from neuraforge.activations import ForageAct, ReLU
+from neuraforge.growth import grow_layer
 from neuraforge.layers import Dense
 from neuraforge.model import Sequential
-from neuraforge.growth import grow_layer
 from neuraforge.pruning import prune_layer
 from neuraforge.seed import seed_everything
 

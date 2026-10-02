@@ -9,16 +9,16 @@ Compares NeuraForge vs PyTorch on CPU, measuring:
  - number of NumPy array allocations per step (via sys.getallocatedblocks())
 """
 
+import gc
+import json
+import os
 import sys
 import time
-import gc
-import psutil
 import tracemalloc
 from pathlib import Path
-import json
-import itertools
+
+import psutil
 import threadpoolctl
-import os
 
 # Explicitly pin BLAS thread count
 os.environ["OMP_NUM_THREADS"] = "4"
@@ -32,10 +32,10 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from neuraforge.autograd import Tensor, no_grad
-from neuraforge.nn import Dense, Conv2d, ReLU, Module
-from neuraforge.transformer import TransformerBlock
 from neuraforge.model import Sequential
+from neuraforge.nn import Conv2d, Dense, Module, ReLU
+from neuraforge.transformer import TransformerBlock
+
 
 class NF_MLP(Module):
     def __init__(self, depth, width):

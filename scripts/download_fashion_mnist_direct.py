@@ -1,8 +1,9 @@
-import os
 import gzip
 import urllib.request
-import numpy as np
 from pathlib import Path
+
+import numpy as np
+
 
 def fetch_fashion_mnist_direct(data_dir: Path):
     base_url = "https://github.com/zalandoresearch/fashion-mnist/raw/master/data/fashion/"

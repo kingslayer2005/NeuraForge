@@ -1,18 +1,19 @@
+import json
+import sys
+from pathlib import Path
+
 import gradio as gr
 import numpy as np
 import pandas as pd
-from pathlib import Path
-import json
-import sys
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from neuraforge.model import Sequential
-from neuraforge.layers import Dense
+from experiments.train_shakespeare import CharTokenizer
 from neuraforge.activations import ReLU
 from neuraforge.io import load_model
+from neuraforge.layers import Dense
+from neuraforge.model import Sequential
 from neuraforge.transformer import DecoderTransformer
-from experiments.train_shakespeare import CharTokenizer, download_tiny_shakespeare
 
 _model = None
 def get_mnist_model():

@@ -9,22 +9,23 @@ fair_ablations.py — Phase 6 Fair Ablations
     Separates the effects of EMA momentum vs gradient clipping.
 """
 
+import json
 import sys
 from pathlib import Path
-import json
-import time
+
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from neuraforge.autograd import Tensor, softmax_cross_entropy, no_grad
-from neuraforge.nn import Dense, Module
+from experiments.datasets import load_mnist
+from neuraforge.autograd import Tensor, softmax_cross_entropy
+from neuraforge.data import DataLoader, train_val_test_split
 from neuraforge.layers import Parameter
 from neuraforge.model import Sequential
-from neuraforge.optimizers import SGD, MomentumSGD, Adam, NeuroGrad
+from neuraforge.nn import Dense, Module
+from neuraforge.optimizers import SGD, Adam, MomentumSGD, NeuroGrad
 from neuraforge.seed import seed_everything
-from neuraforge.data import DataLoader, train_val_test_split
-from experiments.datasets import load_mnist
+
 
 def get_mnist_data():
     X, y = load_mnist()
@@ -37,7 +38,8 @@ def get_mnist_data():
 # CUSTOM ACTIVATIONS FOR ABLATION
 # ===================================================================
 
-from neuraforge.nn import ReLU, GELU, SiLU, ForageAct
+from neuraforge.nn import GELU, ForageAct, ReLU, SiLU
+
 
 class Mish(Module):
     def forward(self, x, **kwargs):
@@ -126,7 +128,6 @@ def train_epoch(model, opt, dl):
     for xb, yb in dl:
         out = model.forward(xb, training=True)
         # Use autograd
-        from neuraforge.autograd import Tensor, softmax_cross_entropy
         
         logits_t = Tensor(out, requires_grad=True)
         loss_t = softmax_cross_entropy(logits_t, yb)

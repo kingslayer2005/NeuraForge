@@ -1,10 +1,8 @@
-import pandas as pd
 from pathlib import Path
-import re
+
 
 def test_readme_matches_results():
     root_dir = Path(__file__).parent.parent
-    results_dir = root_dir / "results"
     readme_path = root_dir / "README.md"
     
     if not readme_path.exists():

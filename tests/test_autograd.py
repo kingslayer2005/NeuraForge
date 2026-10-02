@@ -14,16 +14,20 @@ Additional tests:
     - Shape ops (reshape, transpose, getitem, concatenate)
 """
 
+import sys
+from pathlib import Path
+
 import numpy as np
 import pytest
 
-import sys
-from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from neuraforge.autograd import (
-    Tensor, concatenate, stack, softmax_cross_entropy, mse_loss,
-    no_grad, unbroadcast
+    Tensor,
+    concatenate,
+    no_grad,
+    softmax_cross_entropy,
+    unbroadcast,
 )
 from neuraforge.seed import seed_everything
 
@@ -480,7 +484,7 @@ class TestBroadcastingGradients:
     """
 
     # Shape combinations to test
-    SHAPE_PAIRS = [
+    SHAPE_PAIRS = (
         # (shape_a, shape_b) — all broadcasting combos
         ((1,),   (4,)),       # scalar-like broadcast
         ((4,),   (1,)),       # reverse
@@ -493,7 +497,7 @@ class TestBroadcastingGradients:
         ((3, 4), (1, 1)),     # full vs scalar-like
         ((4,),   (3, 4)),     # (m,) vs (n,m) — leading dim added
         ((3, 4), (4,)),       # (n,m) vs (m,)
-    ]
+    )
 
     @pytest.mark.parametrize("shape_a,shape_b", SHAPE_PAIRS)
     def test_add_broadcast(self, shape_a, shape_b):

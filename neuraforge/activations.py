@@ -18,7 +18,6 @@ Honest framing:
 from __future__ import annotations
 
 import math
-from typing import List
 
 import numpy as np
 
@@ -78,7 +77,7 @@ class ReLU:
         # Gradient passes through only where the input was positive
         return d_out * (self._Z > 0).astype(d_out.dtype)
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         """ReLU has no learnable parameters."""
         return []
 
@@ -143,7 +142,7 @@ class LeakyReLU:
         grad_mask = np.where(self._Z > 0, 1.0, self.negative_slope)
         return d_out * grad_mask
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         """LeakyReLU has no learnable parameters."""
         return []
 
@@ -198,7 +197,7 @@ class Tanh:
         # Derivative of tanh is (1 - tanh²), using cached tanh value
         return d_out * (1.0 - self._tanh ** 2)
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         """Tanh has no learnable parameters."""
         return []
 
@@ -253,7 +252,7 @@ class Sigmoid:
         # Derivative of sigmoid: σ * (1 - σ), using cached sigmoid
         return d_out * self._sigmoid * (1.0 - self._sigmoid)
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         """Sigmoid has no learnable parameters."""
         return []
 
@@ -323,7 +322,7 @@ class SiLU:
 
         return d_out * grad
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         """SiLU has no learnable parameters."""
         return []
 
@@ -410,7 +409,7 @@ class GELU:
 
         return d_out * grad
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         """GELU has no learnable parameters."""
         return []
 
@@ -563,7 +562,7 @@ class ForageAct:
 
         return dZ
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         """Return alpha as a learnable parameter (empty list if mode='fixed')."""
         if self._alpha_param is not None:
             return [self._alpha_param]

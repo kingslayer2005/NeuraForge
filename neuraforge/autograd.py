@@ -26,7 +26,7 @@ Implemented ops:
 from __future__ import annotations
 
 import math
-from typing import List, Optional, Tuple, Union, Callable, Set, Sequence
+from collections.abc import Callable, Sequence
 
 import numpy as np
 
@@ -131,7 +131,7 @@ class Tensor:
 
     def __init__(
         self,
-        data: Union[np.ndarray, float, int, list],
+        data: np.ndarray | float | list,
         requires_grad: bool = False,
         _parents: tuple = (),
         _op: str = "",
@@ -146,13 +146,13 @@ class Tensor:
         self.requires_grad = requires_grad
 
         # Gradient starts as None; accumulated during backward()
-        self.grad: Optional[np.ndarray] = None
+        self.grad: np.ndarray | None = None
 
         # The function that computes gradients for this node's parents
-        self._backward_fn: Optional[Callable] = None
+        self._backward_fn: Callable | None = None
 
         # Parent tensors in the computation graph
-        self._parents: Set[Tensor] = set(_parents)
+        self._parents: set[Tensor] = set(_parents)
 
         # Name of the op that produced this tensor (for debugging)
         self._op = _op
@@ -177,7 +177,7 @@ class Tensor:
         return self.data.size
 
     @property
-    def T(self) -> "Tensor":
+    def T(self) -> Tensor:
         """Shorthand for .transpose()."""
         return self.transpose()
 
@@ -191,11 +191,11 @@ class Tensor:
     # -------------------------------------------------------------------
     # Detach and clone
     # -------------------------------------------------------------------
-    def detach(self) -> "Tensor":
+    def detach(self) -> Tensor:
         """Return a new Tensor with the same data but no gradient history."""
         return Tensor(self.data.copy(), requires_grad=False)
 
-    def clone(self) -> "Tensor":
+    def clone(self) -> Tensor:
         """Return a copy of this tensor that shares no memory."""
         t = Tensor(self.data.copy(), requires_grad=self.requires_grad)
         return t
@@ -218,7 +218,7 @@ class Tensor:
     # -------------------------------------------------------------------
     # Backward — reverse-mode autodiff
     # -------------------------------------------------------------------
-    def backward(self, grad: Optional[np.ndarray] = None) -> None:
+    def backward(self, grad: np.ndarray | None = None) -> None:
         """Compute gradients via reverse-mode autodiff.
 
         Walks the computation graph in reverse topological order (DFS post-order)
@@ -253,8 +253,8 @@ class Tensor:
         # We need to visit parents before children (in reverse order).
         # DFS post-order gives us children-last ordering; reversed gives
         # us the correct backward order (children first, parents last).
-        topo_order: List[Tensor] = []
-        visited: Set[int] = set()
+        topo_order: list[Tensor] = []
+        visited: set[int] = set()
 
         def _build_topo(node: Tensor) -> None:
             """Depth-first post-order traversal."""
@@ -281,7 +281,7 @@ class Tensor:
     # ARITHMETIC OPERATIONS
     # ===================================================================
 
-    def __add__(self, other: Union["Tensor", float, int, np.ndarray]) -> "Tensor":
+    def __add__(self, other: Tensor | float | np.ndarray) -> Tensor:
         """Element-wise addition: self + other.
 
         Backward:
@@ -315,7 +315,7 @@ class Tensor:
     def __radd__(self, other):
         return self.__add__(other)
 
-    def __sub__(self, other: Union["Tensor", float, int, np.ndarray]) -> "Tensor":
+    def __sub__(self, other: Tensor | float | np.ndarray) -> Tensor:
         """Element-wise subtraction: self - other.
 
         Backward:
@@ -346,7 +346,7 @@ class Tensor:
         other = _ensure_tensor(other)
         return other.__sub__(self)
 
-    def __mul__(self, other: Union["Tensor", float, int, np.ndarray]) -> "Tensor":
+    def __mul__(self, other: Tensor | float | np.ndarray) -> Tensor:
         """Element-wise multiplication: self * other.
 
         Backward:
@@ -377,7 +377,7 @@ class Tensor:
     def __rmul__(self, other):
         return self.__mul__(other)
 
-    def __truediv__(self, other: Union["Tensor", float, int, np.ndarray]) -> "Tensor":
+    def __truediv__(self, other: Tensor | float | np.ndarray) -> Tensor:
         """Element-wise division: self / other.
 
         Backward:
@@ -410,7 +410,7 @@ class Tensor:
         other = _ensure_tensor(other)
         return other.__truediv__(self)
 
-    def __neg__(self) -> "Tensor":
+    def __neg__(self) -> Tensor:
         """Negation: -self.
 
         Backward: d(-a)/da = -1
@@ -430,7 +430,7 @@ class Tensor:
         out._backward_fn = _backward
         return out
 
-    def __pow__(self, exponent: Union[float, int]) -> "Tensor":
+    def __pow__(self, exponent: float) -> Tensor:
         """Element-wise power: self ** exponent (scalar exponent only).
 
         Backward:
@@ -452,7 +452,7 @@ class Tensor:
         out._backward_fn = _backward
         return out
 
-    def __matmul__(self, other: "Tensor") -> "Tensor":
+    def __matmul__(self, other: Tensor) -> Tensor:
         """Matrix multiplication: self @ other.
 
         For 2D tensors A (N×K) and B (K×M):
@@ -500,8 +500,8 @@ class Tensor:
     # REDUCTION OPERATIONS
     # ===================================================================
 
-    def sum(self, axis: Optional[Union[int, Tuple[int, ...]]] = None,
-            keepdims: bool = False) -> "Tensor":
+    def sum(self, axis: int | tuple[int, ...] | None = None,
+            keepdims: bool = False) -> Tensor:
         """Sum elements along axis.
 
         Backward:
@@ -541,8 +541,8 @@ class Tensor:
         out._backward_fn = _backward
         return out
 
-    def mean(self, axis: Optional[Union[int, Tuple[int, ...]]] = None,
-             keepdims: bool = False) -> "Tensor":
+    def mean(self, axis: int | tuple[int, ...] | None = None,
+             keepdims: bool = False) -> Tensor:
         """Mean of elements along axis.
 
         Backward:
@@ -588,8 +588,8 @@ class Tensor:
         out._backward_fn = _backward
         return out
 
-    def max(self, axis: Optional[int] = None,
-            keepdims: bool = False) -> "Tensor":
+    def max(self, axis: int | None = None,
+            keepdims: bool = False) -> Tensor:
         """Maximum along axis.
 
         Backward:
@@ -635,7 +635,7 @@ class Tensor:
     # SHAPE OPERATIONS
     # ===================================================================
 
-    def reshape(self, *shape) -> "Tensor":
+    def reshape(self, *shape) -> Tensor:
         """Reshape the tensor.
 
         Backward:
@@ -663,7 +663,7 @@ class Tensor:
         out._backward_fn = _backward
         return out
 
-    def transpose(self, *axes) -> "Tensor":
+    def transpose(self, *axes) -> Tensor:
         """Transpose (permute) the dimensions.
 
         Backward:
@@ -700,7 +700,7 @@ class Tensor:
         out._backward_fn = _backward
         return out
 
-    def __getitem__(self, index) -> "Tensor":
+    def __getitem__(self, index) -> Tensor:
         """Indexing/slicing: self[index].
 
         Backward:
@@ -731,7 +731,7 @@ class Tensor:
     # UNARY OPERATIONS
     # ===================================================================
 
-    def exp(self) -> "Tensor":
+    def exp(self) -> Tensor:
         """Element-wise exponential: exp(x).
 
         Backward: d(exp(x))/dx = exp(x)
@@ -752,7 +752,7 @@ class Tensor:
         out._backward_fn = _backward
         return out
 
-    def log(self) -> "Tensor":
+    def log(self) -> Tensor:
         """Element-wise natural logarithm: log(x).
 
         Backward: d(log(x))/dx = 1/x
@@ -773,7 +773,7 @@ class Tensor:
         out._backward_fn = _backward
         return out
 
-    def sqrt(self) -> "Tensor":
+    def sqrt(self) -> Tensor:
         """Element-wise square root: sqrt(x).
 
         Backward: d(sqrt(x))/dx = 1 / (2 * sqrt(x))
@@ -794,7 +794,7 @@ class Tensor:
         out._backward_fn = _backward
         return out
 
-    def abs(self) -> "Tensor":
+    def abs(self) -> Tensor:
         """Element-wise absolute value: |x|.
 
         Backward: d|x|/dx = sign(x)
@@ -815,7 +815,7 @@ class Tensor:
         out._backward_fn = _backward
         return out
 
-    def tanh(self) -> "Tensor":
+    def tanh(self) -> Tensor:
         """Element-wise tanh: tanh(x).
 
         Backward: d(tanh(x))/dx = 1 - tanh^2(x)
@@ -836,7 +836,7 @@ class Tensor:
         out._backward_fn = _backward
         return out
 
-    def sigmoid(self) -> "Tensor":
+    def sigmoid(self) -> Tensor:
         """Element-wise sigmoid: σ(x) = 1 / (1 + exp(-x)).
 
         Backward: d(σ(x))/dx = σ(x) * (1 - σ(x))
@@ -862,7 +862,7 @@ class Tensor:
         out._backward_fn = _backward
         return out
 
-    def relu(self) -> "Tensor":
+    def relu(self) -> Tensor:
         """Element-wise ReLU: max(0, x).
 
         Backward: d(relu(x))/dx = 1 if x > 0, else 0
@@ -884,7 +884,7 @@ class Tensor:
         out._backward_fn = _backward
         return out
 
-    def gelu(self) -> "Tensor":
+    def gelu(self) -> Tensor:
         """Element-wise GELU using the tanh approximation.
 
         f(x) = 0.5 * x * (1 + tanh(sqrt(2/π) * (x + 0.044715 * x^3)))
@@ -925,7 +925,7 @@ class Tensor:
         out._backward_fn = _backward
         return out
 
-    def silu(self) -> "Tensor":
+    def silu(self) -> Tensor:
         """Element-wise SiLU (Swish): x * σ(x).
 
         Backward:
@@ -960,7 +960,7 @@ class Tensor:
     # COMPOSITE OPERATIONS (numerically stable)
     # ===================================================================
 
-    def softmax(self, axis: int = -1) -> "Tensor":
+    def softmax(self, axis: int = -1) -> Tensor:
         """Numerically stable softmax along axis.
 
         softmax(x_i) = exp(x_i - max(x)) / sum(exp(x_j - max(x)))
@@ -1003,7 +1003,7 @@ class Tensor:
         out._backward_fn = _backward
         return out
 
-    def log_softmax(self, axis: int = -1) -> "Tensor":
+    def log_softmax(self, axis: int = -1) -> Tensor:
         """Numerically stable log-softmax via logsumexp.
 
         log_softmax(x) = x - logsumexp(x)

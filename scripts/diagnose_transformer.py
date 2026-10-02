@@ -1,11 +1,18 @@
 import sys
 from pathlib import Path
+
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from experiments.train_shakespeare import CharTokenizer, download_tiny_shakespeare, get_batch, compute_loss_and_grad
+from experiments.train_shakespeare import (
+    CharTokenizer,
+    compute_loss_and_grad,
+    download_tiny_shakespeare,
+    get_batch,
+)
 from neuraforge.transformer import DecoderTransformer
+
 
 def compute_bigram_baseline(data, vocab_size):
     # Count transitions

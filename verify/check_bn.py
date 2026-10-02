@@ -1,10 +1,12 @@
 import sys
 from pathlib import Path
+
 import numpy as np
 import torch
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from neuraforge.nn import BatchNorm1d
+
 
 def check_bn_eval():
     np.random.seed(42)

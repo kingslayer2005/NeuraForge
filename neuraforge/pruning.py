@@ -7,8 +7,8 @@ and outgoing gradient magnitude (Taylor approximation).
 
 import numpy as np
 
-from neuraforge.model import Sequential
 from neuraforge.layers import Dense
+from neuraforge.model import Sequential
 
 
 def prune_layer(model: Sequential, layer_idx: int, prune_fraction: float = 0.1) -> None:
@@ -31,7 +31,7 @@ def prune_layer(model: Sequential, layer_idx: int, prune_fraction: float = 0.1) 
         
     layer = model.layers[layer_idx]
     if not isinstance(layer, Dense):
-        raise ValueError("Can only prune Dense layers.")
+        raise TypeError("Can only prune Dense layers.")
         
     # Find the next Dense layer to remove the incoming connections
     next_dense_idx = -1

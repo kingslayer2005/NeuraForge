@@ -1,18 +1,19 @@
-import argparse
-from pathlib import Path
 import json
+from pathlib import Path
+
 import numpy as np
 
-from neuraforge.data import train_val_test_split, Standardizer, DataLoader
 from experiments.datasets import load_mnist
-from neuraforge.model import Sequential
-from neuraforge.layers import Dense
 from neuraforge.activations import ReLU
-from neuraforge.losses import SoftmaxCrossEntropy
-from neuraforge.optimizers import Adam
-from neuraforge.train import fit, accuracy_score
+from neuraforge.data import DataLoader, Standardizer, train_val_test_split
 from neuraforge.io import save_model
+from neuraforge.layers import Dense
+from neuraforge.losses import SoftmaxCrossEntropy
+from neuraforge.model import Sequential
+from neuraforge.optimizers import Adam
 from neuraforge.seed import seed_everything
+from neuraforge.train import accuracy_score, fit
+
 
 def main():
     seed_everything(42)

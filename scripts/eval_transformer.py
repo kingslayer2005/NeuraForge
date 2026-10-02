@@ -1,12 +1,13 @@
 import sys
 from pathlib import Path
+
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from neuraforge.transformer import DecoderTransformer
 from experiments.train_shakespeare import CharTokenizer, download_tiny_shakespeare
-from neuraforge.io import load_model
+from neuraforge.transformer import DecoderTransformer
+
 
 def get_loss(model, text, tokenizer, seq_len=128):
     # Evaluate a few batches to estimate loss

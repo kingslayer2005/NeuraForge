@@ -1,18 +1,28 @@
+import json
 import sys
 from pathlib import Path
-import json
+
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from neuraforge.data import DataLoader
-from experiments.datasets import load_mnist, load_fashion_mnist
+from experiments.datasets import load_fashion_mnist, load_mnist
 from experiments.fair_ablations import (
-    ReLU, GELU, SiLU, Mish, PReLU, SwishLearned, ForageAct,
-    build_mlp, evaluate, train_epoch, get_optimizer
+    GELU,
+    ForageAct,
+    Mish,
+    PReLU,
+    ReLU,
+    SiLU,
+    SwishLearned,
+    build_mlp,
+    evaluate,
+    get_optimizer,
+    train_epoch,
 )
+from neuraforge.data import DataLoader, Standardizer, train_val_test_split
 from neuraforge.seed import seed_everything
-from neuraforge.data import train_val_test_split, Standardizer
+
 
 def prepare_data(dataset_name):
     if dataset_name == "MNIST":

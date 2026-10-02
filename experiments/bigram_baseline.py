@@ -1,9 +1,11 @@
 import sys
 from pathlib import Path
+
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from experiments.train_shakespeare import download_tiny_shakespeare, CharTokenizer
+from experiments.train_shakespeare import CharTokenizer, download_tiny_shakespeare
+
 
 def bigram_baseline():
     root = Path(__file__).parent.parent

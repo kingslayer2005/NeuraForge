@@ -8,8 +8,8 @@ are initialised such that the network outputs exactly the same values as before.
 
 import numpy as np
 
-from neuraforge.model import Sequential
 from neuraforge.layers import Dense
+from neuraforge.model import Sequential
 
 
 def grow_layer(model: Sequential, layer_idx: int, num_new_neurons: int) -> None:
@@ -35,7 +35,7 @@ def grow_layer(model: Sequential, layer_idx: int, num_new_neurons: int) -> None:
         
     layer = model.layers[layer_idx]
     if not isinstance(layer, Dense):
-        raise ValueError("Can only widen Dense layers.")
+        raise TypeError("Can only widen Dense layers.")
         
     # Find the next Dense layer
     next_dense_idx = -1
@@ -72,9 +72,7 @@ def grow_layer(model: Sequential, layer_idx: int, num_new_neurons: int) -> None:
     W_new[:, :old_out_dim] = layer.W.data
     b_new[:, :old_out_dim] = layer.b.data
     
-    # Copy replicated neurons (with slight noise to break symmetry)
-    noise_std = 0.01 * np.std(layer.W.data)
-    
+    # Copy replicated neurons (exact copy, no noise)
     for i, orig_idx in enumerate(replicate_indices):
         new_idx = old_out_dim + i
         W_new[:, new_idx] = layer.W.data[:, orig_idx] # exact copy, no noise

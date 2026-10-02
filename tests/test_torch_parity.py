@@ -9,10 +9,10 @@ import numpy as np
 import pytest
 
 torch = pytest.importorskip("torch")
-import torch.nn as nn
 import torch.nn.functional as F
+from torch import nn
 
-from neuraforge.activations import ForageAct, ReLU, SiLU
+from neuraforge.activations import ForageAct
 from neuraforge.layers import Dense
 from neuraforge.losses import SoftmaxCrossEntropy
 from neuraforge.model import Sequential

@@ -12,8 +12,6 @@ Optimizers update param.data in place; backward() sets param.grad.
 
 from __future__ import annotations
 
-from typing import List
-
 import numpy as np
 
 
@@ -136,7 +134,7 @@ class Dense:
 
         return d_input
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         """Return all learnable parameters in this layer."""
         return [self.W, self.b]
 
@@ -218,6 +216,6 @@ class Dropout:
         # Gradient flows only through kept elements, scaled by 1/(1-p)
         return d_out * self._mask / (1.0 - self.p)
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         """Dropout has no learnable parameters."""
         return []

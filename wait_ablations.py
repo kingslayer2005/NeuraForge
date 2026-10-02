@@ -1,4 +1,5 @@
-import json, time, sys
+import json
+import time
 
 print("Waiting for optimizer ablations to finish...")
 while True:
@@ -13,6 +14,6 @@ while True:
                 ci = v["acc_ci95"] * 100
                 print(f"  {k}: {acc:.2f}% +/- {ci:.2f}%")
             break
-    except Exception as e:
+    except Exception:
         pass
     time.sleep(10)

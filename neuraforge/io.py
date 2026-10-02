@@ -6,12 +6,12 @@ Allows for complete model reconstruction from the file alone.
 """
 
 import json
-from typing import Any, Dict
+from typing import Any
 
 import numpy as np
 
 
-def get_weights(model: Any) -> Dict[str, np.ndarray]:
+def get_weights(model: Any) -> dict[str, np.ndarray]:
     """Extract a dictionary of parameter copies from the model."""
     weights = {}
     for p in model.parameters():
@@ -19,7 +19,7 @@ def get_weights(model: Any) -> Dict[str, np.ndarray]:
     return weights
 
 
-def set_weights(model: Any, weights: Dict[str, np.ndarray]) -> None:
+def set_weights(model: Any, weights: dict[str, np.ndarray]) -> None:
     """Load weights into the model from a dictionary in-place."""
     model_params = {p.name: p for p in model.parameters()}
     
@@ -61,9 +61,8 @@ def save_model(model: Any, filepath: str) -> None:
 
 def build_from_config(config: dict) -> Any:
     """Reconstruct a model from its configuration dictionary."""
+    from neuraforge import activations, layers
     from neuraforge.model import Sequential
-    import neuraforge.layers as layers
-    import neuraforge.activations as activations
 
     if config.get("type") != "Sequential":
         raise ValueError("Only Sequential models are supported for reconstruction.")

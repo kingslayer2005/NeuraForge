@@ -19,8 +19,6 @@ Honest framing:
 
 from __future__ import annotations
 
-from typing import List
-
 import numpy as np
 
 from neuraforge.layers import Parameter
@@ -42,8 +40,8 @@ class SGD:
         Learning rate. Default 0.01.
     """
 
-    def __init__(self, params: List[Parameter], lr: float = 0.01) -> None:
-        self.params: List[Parameter] = params
+    def __init__(self, params: list[Parameter], lr: float = 0.01) -> None:
+        self.params: list[Parameter] = params
         self.lr: float = lr
 
     def step(self) -> None:
@@ -83,16 +81,16 @@ class MomentumSGD:
 
     def __init__(
         self,
-        params: List[Parameter],
+        params: list[Parameter],
         lr: float = 0.01,
         beta: float = 0.9,
     ) -> None:
-        self.params: List[Parameter] = params
+        self.params: list[Parameter] = params
         self.lr: float = lr
         self.beta: float = beta
 
         # Initialise velocity buffers to zero for each parameter
-        self._velocities: List[np.ndarray] = [
+        self._velocities: list[np.ndarray] = [
             np.zeros_like(p.data) for p in params
         ]
 
@@ -141,22 +139,22 @@ class Adam:
 
     def __init__(
         self,
-        params: List[Parameter],
+        params: list[Parameter],
         lr: float = 0.001,
         beta1: float = 0.9,
         beta2: float = 0.999,
         eps: float = 1e-8,
     ) -> None:
-        self.params: List[Parameter] = params
+        self.params: list[Parameter] = params
         self.lr: float = lr
         self.beta1: float = beta1
         self.beta2: float = beta2
         self.eps: float = eps
 
         # First moment estimate (mean of gradients), initialised to zero
-        self._m: List[np.ndarray] = [np.zeros_like(p.data) for p in params]
+        self._m: list[np.ndarray] = [np.zeros_like(p.data) for p in params]
         # Second moment estimate (mean of squared gradients), initialised to zero
-        self._v: List[np.ndarray] = [np.zeros_like(p.data) for p in params]
+        self._v: list[np.ndarray] = [np.zeros_like(p.data) for p in params]
         # Timestep counter (for bias correction)
         self._t: int = 0
 
@@ -230,7 +228,7 @@ class NeuroGrad:
 
     def __init__(
         self,
-        params: List[Parameter],
+        params: list[Parameter],
         lr: float = 0.01,
         beta: float = 0.9,
         clip_value: float = 1.0,
@@ -239,14 +237,14 @@ class NeuroGrad:
         if clip_mode not in ("per_tensor", "global_norm", "none"):
             raise ValueError(f"clip_mode must be 'per_tensor', 'global_norm', or 'none', got {clip_mode!r}")
 
-        self.params: List[Parameter] = params
+        self.params: list[Parameter] = params
         self.lr: float = lr
         self.beta: float = beta
         self.clip_value: float = clip_value
         self.clip_mode: str = clip_mode
 
         # Initialise EMA velocity buffers to zero
-        self._velocities: List[np.ndarray] = [
+        self._velocities: list[np.ndarray] = [
             np.zeros_like(p.data) for p in params
         ]
 

@@ -9,21 +9,22 @@ Validates:
     5. DecoderTransformer end-to-end forward/backward
 """
 
+import sys
+from pathlib import Path
+
 import numpy as np
 import pytest
 
-import sys
-from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from neuraforge.seed import seed_everything
 from neuraforge.transformer import (
-    scaled_dot_product_attention,
+    DecoderTransformer,
+    FeedForward,
     MultiHeadAttention,
     SinusoidalPositionalEncoding,
-    FeedForward,
     TransformerBlock,
-    DecoderTransformer,
+    scaled_dot_product_attention,
 )
 
 

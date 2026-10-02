@@ -15,12 +15,11 @@ arrays, following the same protocol as the rest of NeuraForge.
 from __future__ import annotations
 
 import math
-from typing import List, Optional, Tuple
 
 import numpy as np
 
 from neuraforge.layers import Parameter
-from neuraforge.nn import Module, Dense, LayerNorm, Dropout, Embedding
+from neuraforge.nn import Dropout, Embedding, LayerNorm, Module
 
 
 # ===================================================================
@@ -30,8 +29,8 @@ def scaled_dot_product_attention(
     Q: np.ndarray,
     K: np.ndarray,
     V: np.ndarray,
-    mask: Optional[np.ndarray] = None,
-) -> Tuple[np.ndarray, np.ndarray]:
+    mask: np.ndarray | None = None,
+) -> tuple[np.ndarray, np.ndarray]:
     """Compute scaled dot-product attention.
 
     Attention(Q, K, V) = softmax(Q @ K^T / sqrt(d_k)) @ V
@@ -146,7 +145,7 @@ class MultiHeadAttention(Module):
         return x.reshape(batch, seq, self.d_model)
 
     def forward(self, x: np.ndarray, training: bool = True,
-                mask: Optional[np.ndarray] = None) -> np.ndarray:
+                mask: np.ndarray | None = None) -> np.ndarray:
         """Forward pass for multi-head attention.
 
         For self-attention: Q = K = V = x (projected through different matrices).
@@ -161,7 +160,7 @@ class MultiHeadAttention(Module):
         -------
         np.ndarray, shape (batch, seq, d_model)
         """
-        batch, seq, _ = x.shape
+        _batch, _seq, _ = x.shape
         self._input = x
 
         # Step 1: Linear projections — Q, K, V
@@ -272,7 +271,7 @@ class MultiHeadAttention(Module):
 
         return d_input
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return [self.W_q, self.b_q, self.W_k, self.b_k,
                 self.W_v, self.b_v, self.W_o, self.b_o]
 
@@ -333,7 +332,7 @@ class SinusoidalPositionalEncoding(Module):
         """PE is additive and fixed, so gradient passes through unchanged."""
         return d_out
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return []
 
 
@@ -375,7 +374,7 @@ class LearnedPositionalEncoding(Module):
         self.pe.grad[:self._seq_len] += np.sum(d_out, axis=0)
         return d_out
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return [self.pe]
 
 
@@ -478,7 +477,7 @@ class FeedForward(Module):
 
         return d_input.reshape(batch, seq, self.d_model)
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         params = [self.W1, self.b1, self.W2, self.b2]
         return params
 
@@ -523,7 +522,7 @@ class TransformerBlock(Module):
         return {"type": "TransformerBlock"}
 
     def forward(self, x: np.ndarray, training: bool = True,
-                mask: Optional[np.ndarray] = None) -> np.ndarray:
+                mask: np.ndarray | None = None) -> np.ndarray:
         """Forward pass through one transformer block.
 
         Parameters
@@ -605,7 +604,7 @@ class TransformerBlock(Module):
 
         return d_input
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         params = []
         params.extend(self.ln1.parameters())
         params.extend(self.attn.parameters())
@@ -718,7 +717,7 @@ class DecoderTransformer(Module):
         np.ndarray, shape (batch, seq_len, vocab_size)
             Logits for each position.
         """
-        batch, seq_len = token_ids.shape
+        _batch, _seq_len = token_ids.shape
 
         # Token embedding: look up (batch, seq_len, d_model)
         x = self.token_emb.forward(token_ids, training=training)
@@ -737,7 +736,7 @@ class DecoderTransformer(Module):
         self._after_emb = x
 
         # Causal mask for autoregressive attention
-        causal_mask = self._make_causal_mask(seq_len)
+        causal_mask = self._make_causal_mask(_seq_len)
 
         # Pass through transformer blocks
         for block in self.blocks:
@@ -805,7 +804,7 @@ class DecoderTransformer(Module):
             # d_W_emb_output has shape (d_model, vocab_size), but W has shape (vocab_size, d_model)
             self.token_emb.W.grad += self._d_W_emb_output.T
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         params = []
         params.extend(self.token_emb.parameters())
         if isinstance(self.pos_enc, LearnedPositionalEncoding):

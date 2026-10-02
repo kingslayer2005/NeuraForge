@@ -1,14 +1,24 @@
 import sys
 from pathlib import Path
+
 import numpy as np
 import torch
 import torch.nn as tnn
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from neuraforge.nn import Dense, Dropout, Conv2d, MaxPool2d, BatchNorm1d, BatchNorm2d, LayerNorm, Embedding
-from neuraforge.transformer import scaled_dot_product_attention, MultiHeadAttention
-from neuraforge.autograd import Tensor
+from neuraforge.nn import (
+    BatchNorm1d,
+    BatchNorm2d,
+    Conv2d,
+    Dense,
+    Dropout,
+    Embedding,
+    LayerNorm,
+    MaxPool2d,
+)
+from neuraforge.transformer import MultiHeadAttention
+
 
 def compare_layer(name, nf_layer, pt_layer, x_np, config):
     # Set weights identical

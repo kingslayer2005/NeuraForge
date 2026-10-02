@@ -5,6 +5,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from experiments.datasets import fetch_and_cache_openml
 
+
 def download_fashion_mnist_robust():
     for attempt in range(5):
         try:

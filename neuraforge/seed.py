@@ -6,7 +6,6 @@ with the same seed produces identical results.
 """
 
 import random  # Python's built-in random module
-from typing import Optional
 
 import numpy as np
 

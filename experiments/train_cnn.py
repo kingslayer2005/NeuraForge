@@ -1,21 +1,21 @@
 import sys
 from pathlib import Path
-import json
+
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from neuraforge.data import train_val_test_split, Standardizer, DataLoader
 from experiments.datasets import load_mnist
+from neuraforge.activations import ReLU
+from neuraforge.data import DataLoader, Standardizer, train_val_test_split
+from neuraforge.layers import Dense
+from neuraforge.losses import SoftmaxCrossEntropy
 from neuraforge.model import Sequential
 from neuraforge.nn import Conv2d, MaxPool2d
-from neuraforge.layers import Dense
-from neuraforge.activations import ReLU
-from neuraforge.losses import SoftmaxCrossEntropy
 from neuraforge.optimizers import Adam
-from neuraforge.train import fit, accuracy_score
-from neuraforge.io import save_model
 from neuraforge.seed import seed_everything
+from neuraforge.train import accuracy_score, fit
+
 
 # Reshape layer wrapper
 class Reshape:
@@ -34,6 +34,8 @@ class Reshape:
     # NeuraForge might just need a proper reshape layer, let's build it properly
 
 from neuraforge.nn import Module
+
+
 class Flatten(Module):
     def forward(self, X, training=False):
         self._in_shape = X.shape

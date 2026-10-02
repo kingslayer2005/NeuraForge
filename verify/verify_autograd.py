@@ -1,12 +1,15 @@
 import sys
 from pathlib import Path
+
 import numpy as np
 
 # ensure neuraforge is importable
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from neuraforge.autograd import Tensor, unbroadcast
 from scipy.special import logsumexp
+
+from neuraforge.autograd import Tensor
+
 
 def check_op(op_func, get_inputs, name):
     inputs = get_inputs()
@@ -119,7 +122,7 @@ def verify_autograd():
                 o.backward(np.ones_like(o.data))
                 div_pass = a.grad.shape == sA and b.grad.shape == sB
                 
-                print(f"{str(sA):12s} | {str(sB):12s} | {'P' if add_pass else 'F'}   | {'P' if sub_pass else 'F'}   | {'P' if mul_pass else 'F'}   | {'P' if div_pass else 'F'}")
+                print(f"{sA!s:12s} | {sB!s:12s} | {'P' if add_pass else 'F'}   | {'P' if sub_pass else 'F'}   | {'P' if mul_pass else 'F'}   | {'P' if div_pass else 'F'}")
             except ValueError:
                 # Incompatible shapes for broadcast
                 pass

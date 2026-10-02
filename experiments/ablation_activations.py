@@ -12,23 +12,22 @@ Runs 5 seeds and aggregates the results into CSV.
 """
 
 import argparse
-import json
-import os
 import sys
 import time
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 import warnings
 
 import matplotlib
+
 matplotlib.use('Agg')  # Unattended runs
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-import experiments.path_hack
 from experiments.datasets import load_fashion_mnist, load_mnist
-from neuraforge.activations import GELU, ReLU, SiLU, ForageAct
+from neuraforge.activations import GELU, ForageAct, ReLU, SiLU
 from neuraforge.data import DataLoader, Standardizer, train_val_test_split
 from neuraforge.layers import Dense
 from neuraforge.losses import SoftmaxCrossEntropy

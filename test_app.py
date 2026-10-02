@@ -1,5 +1,7 @@
-import app
 import numpy as np
+
+import app
+
 print("Testing predict_digit...")
 img = np.zeros((28, 28))
 try:

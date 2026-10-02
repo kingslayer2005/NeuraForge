@@ -13,28 +13,27 @@ Regimes:
 import argparse
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 import warnings
-import time
 
 import matplotlib
+
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-import experiments.path_hack
 from experiments.datasets import load_mnist
 from neuraforge.activations import ReLU
 from neuraforge.data import DataLoader, Standardizer, train_val_test_split
+from neuraforge.growth import widen_layer
 from neuraforge.layers import Dense
 from neuraforge.losses import SoftmaxCrossEntropy
 from neuraforge.model import Sequential
 from neuraforge.optimizers import MomentumSGD
+from neuraforge.pruning import prune_layer
 from neuraforge.seed import seed_everything
 from neuraforge.train import evaluate, fit
-from neuraforge.growth import widen_layer
-from neuraforge.pruning import prune_layer
 
 warnings.filterwarnings("ignore")
 
@@ -51,7 +50,7 @@ def count_parameters(model: Sequential) -> int:
     return sum(p.data.size for p in model.parameters())
 
 def run_experiment(n_seeds: int = 5, epochs: int = 10) -> pd.DataFrame:
-    print(f"--- Starting Growth and Pruning Benchmark on MNIST ---")
+    print("--- Starting Growth and Pruning Benchmark on MNIST ---")
     
     X, y = load_mnist()
     Y = np.eye(10)[y]

@@ -1,12 +1,14 @@
 import sys
 from pathlib import Path
+
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from experiments.train_shakespeare import CharTokenizer, get_batch, compute_loss_and_grad
-from neuraforge.transformer import DecoderTransformer
+from experiments.train_shakespeare import compute_loss_and_grad
 from neuraforge.optimizers import Adam
+from neuraforge.transformer import DecoderTransformer
+
 
 def main():
     # 1. Initialize model

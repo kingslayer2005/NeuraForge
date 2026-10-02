@@ -214,6 +214,15 @@ python app.py
 - [Audit Report](docs/audit.md) — what was broken, what was fabricated, and how it was fixed
 - [Verification Report](docs/verification_report.md) — raw terminal output from the original audit
 
+## Continuous Integration (CI)
+
+NeuraForge uses GitHub Actions to run automated testing on every push and pull request to the `main` branch. 
+
+- **Matrix**: Tests are run on Ubuntu Linux across Python 3.10, 3.11, 3.12, and 3.14.
+- **Scope**: CI executes `pytest tests/` which collects all 152 unit tests. It does not run standalone test scripts in `scripts/` or `test_app.py` in the root directory.
+- **Linting**: We enforce `ruff` linting exclusively on the `neuraforge/` and `tests/` directories to keep the core clean, while leaving experimental code unenforced.
+- **PyTorch Parity**: The PyTorch parity tests (`tests/test_torch_parity.py`) use the CPU-only version of PyTorch to avoid massive GPU dependencies in CI. If PyTorch fails to install for any reason (or on unreleased Python versions), the test automatically skips via `pytest.importorskip("torch")` with a clear reason instead of failing the pipeline.
+
 ## License
 
 MIT

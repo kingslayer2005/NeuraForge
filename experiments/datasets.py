@@ -5,7 +5,6 @@ Provides two-moons, spirals, MNIST, and Fashion-MNIST.
 Downloads from OpenML via scikit-learn and caches as .npz in data/.
 """
 
-import os
 from pathlib import Path
 
 import numpy as np

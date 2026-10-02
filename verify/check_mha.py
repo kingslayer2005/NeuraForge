@@ -1,6 +1,5 @@
-import torch
 import torch.nn as tnn
-import numpy as np
+
 
 def check():
     mha = tnn.MultiheadAttention(embed_dim=16, num_heads=4, batch_first=True, bias=False)

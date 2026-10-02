@@ -1,7 +1,8 @@
-import pandas as pd
-from pathlib import Path
-import os
 import re
+from pathlib import Path
+
+import pandas as pd
+
 
 def main():
     root_dir = Path(__file__).parent.parent

@@ -1,0 +1,11 @@
+pytest==9.1.1
+ruff==0.16.10
+torch==2.14.0
+pandas==3.0.5
+matplotlib==3.11.1
+gradio==6.29.0
+scipy==1.18.1
+scikit-learn==1.9.0
+psutil==7.2.2
+threadpoolctl==3.6.0
+pillow==12.3.0

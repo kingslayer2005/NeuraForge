@@ -7,7 +7,6 @@ Features:
 - DataLoader: Iterate over arrays in mini-batches.
 """
 
-from typing import Dict, Tuple
 
 import numpy as np
 
@@ -18,7 +17,7 @@ def train_val_test_split(
     val_frac: float = 0.1,
     test_frac: float = 0.1,
     seed: int = 42,
-) -> Dict[str, np.ndarray]:
+) -> dict[str, np.ndarray]:
     """Shuffle and split arrays into train, validation, and test sets.
 
     Parameters
@@ -175,7 +174,7 @@ class DataLoader:
             self.rng.shuffle(self._indices)
         return self
 
-    def __next__(self) -> Tuple[np.ndarray, np.ndarray]:
+    def __next__(self) -> tuple[np.ndarray, np.ndarray]:
         """Yield the next mini-batch.
 
         Returns

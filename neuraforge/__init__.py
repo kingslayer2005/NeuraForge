@@ -19,19 +19,41 @@ __version__ = "0.2.0"
 # Expose core primitives at the package level for clean imports
 from neuraforge.activations import (
     GELU,
+    ForageAct,
     LeakyReLU,
     ReLU,
     Sigmoid,
     SiLU,
     Tanh,
-    ForageAct,
 )
+
+# New autograd engine
+from neuraforge.autograd import Tensor, no_grad
 from neuraforge.layers import Dense, Dropout
 from neuraforge.losses import BCEWithLogitsLoss, MSELoss, SoftmaxCrossEntropy
 from neuraforge.model import Sequential
 from neuraforge.optimizers import SGD, Adam, MomentumSGD, NeuroGrad
 from neuraforge.seed import seed_everything
 
-# New autograd engine
-from neuraforge.autograd import Tensor, no_grad
-
+__all__ = [
+    "GELU",
+    "SGD",
+    "Adam",
+    "BCEWithLogitsLoss",
+    "Dense",
+    "Dropout",
+    "ForageAct",
+    "LeakyReLU",
+    "MSELoss",
+    "MomentumSGD",
+    "NeuroGrad",
+    "ReLU",
+    "Sequential",
+    "SiLU",
+    "Sigmoid",
+    "SoftmaxCrossEntropy",
+    "Tanh",
+    "Tensor",
+    "no_grad",
+    "seed_everything",
+]

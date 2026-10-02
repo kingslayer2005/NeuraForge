@@ -14,8 +14,8 @@ This is the base engine that future NeuroForage features
 (custom activations, optimizers, growth, pruning) will build on.
 """
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 # --------------------------------------

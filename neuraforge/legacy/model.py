@@ -8,7 +8,7 @@ all learnable parameters across the entire network without hardcoded names.
 
 from __future__ import annotations
 
-from typing import List, Any
+from typing import Any
 
 import numpy as np
 
@@ -34,7 +34,7 @@ class Sequential:
 
     def __init__(self, *layers: Any) -> None:
         # Store layers as a list (tuples are immutable; list allows dynamic changes later)
-        self.layers: List[Any] = list(layers)
+        self.layers: list[Any] = list(layers)
 
     @property
     def config(self) -> dict:
@@ -87,7 +87,7 @@ class Sequential:
             d_prev = layer.backward(d_prev)
         return d_prev
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         """Collect all learnable parameters from all layers.
 
         This acts as a central registry. It walks through every layer,
@@ -99,7 +99,7 @@ class Sequential:
         list[Parameter]
             A flat list of Parameter objects ready for an optimizer.
         """
-        all_params: List[Parameter] = []
+        all_params: list[Parameter] = []
 
         for i, layer in enumerate(self.layers):
             layer_params = layer.parameters()

@@ -46,7 +46,7 @@ def test_optimizer_convergence(OptimizerClass, kwargs):
         # Forward: loss = x^2 + 2y^2
         x = p_x.data[0]
         y = p_y.data[0]
-        loss = x**2 + 2 * y**2
+        _ = x**2 + 2 * y**2
         
         # Backward: dx = 2x, dy = 4y
         opt.zero_grad()

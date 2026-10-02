@@ -1,11 +1,11 @@
 import sys
 from pathlib import Path
-import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from app import predict_digit
 from experiments.datasets import load_mnist
+
 
 def main():
     X, y = load_mnist()
@@ -19,7 +19,7 @@ def main():
     
     probs = predict_digit(img_array)
     print(f"Actual label: {label}")
-    print(f"Predicted probs:")
+    print("Predicted probs:")
     for k, v in probs.items():
         print(f"  {k}: {v:.4f}")
 

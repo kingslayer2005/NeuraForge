@@ -25,11 +25,10 @@ Public API is kept compatible with the original neuraforge modules:
 from __future__ import annotations
 
 import math
-from typing import List, Optional, Tuple
 
 import numpy as np
 
-from neuraforge.autograd import Tensor, no_grad, softmax_cross_entropy
+from neuraforge.autograd import Tensor
 from neuraforge.layers import Parameter
 
 
@@ -57,7 +56,7 @@ class Module:
         """Set the module to evaluation mode."""
         return self.train(False)
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         """Collect all Parameter objects owned by this module.
 
         Override in subclasses that have learnable parameters.
@@ -169,7 +168,7 @@ class Dense(Module):
         d_input = self._X_tensor.grad if self._X_tensor.grad is not None else np.zeros_like(self._input)
         return d_input
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return [self.W, self.b]
 
 
@@ -351,7 +350,7 @@ class Conv2d(Module):
         self._input_padded = X
         self._input_shape_before_pad = X.shape  # after padding
 
-        N, C, H, W = X.shape
+        N, _C, H, W = X.shape
         kH, kW = self.kernel_size
         s = self.stride
 
@@ -390,8 +389,8 @@ class Conv2d(Module):
         np.ndarray, shape (N, C_in, H, W)
             Gradient w.r.t. the input (before padding).
         """
-        N, C_out, H_out, W_out = d_out.shape
-        kH, kW = self.kernel_size
+        _N, C_out, _H_out, _W_out = d_out.shape
+        _kH, _kW = self.kernel_size
 
         # Reshape d_out: (N, C_out, H_out, W_out) → (N, H_out, W_out, C_out) → (N*H_out*W_out, C_out)
         d_out_2d = d_out.transpose(0, 2, 3, 1).reshape(-1, C_out)
@@ -426,7 +425,7 @@ class Conv2d(Module):
 
         return dX
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return [self.W, self.b]
 
 
@@ -444,7 +443,7 @@ class MaxPool2d(Module):
         Stride of the pooling. Default: same as kernel_size.
     """
 
-    def __init__(self, kernel_size: int = 2, stride: Optional[int] = None) -> None:
+    def __init__(self, kernel_size: int = 2, stride: int | None = None) -> None:
         super().__init__()
         self.kernel_size = kernel_size
         self.stride = stride if stride is not None else kernel_size
@@ -507,7 +506,7 @@ class MaxPool2d(Module):
         -------
         np.ndarray, shape (N, C, H, W)
         """
-        N, C, H, W = self._input_shape
+        N, C, _H, _W = self._input_shape
         k = self.kernel_size
         s = self.stride
         H_out = d_out.shape[2]
@@ -536,7 +535,7 @@ class MaxPool2d(Module):
 
         return dX
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return []
 
 
@@ -692,7 +691,7 @@ class BatchNorm1d(Module):
 
         return dx
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return [self.gamma, self.beta]
 
 
@@ -771,7 +770,7 @@ class BatchNorm2d(Module):
         Same derivation as BatchNorm1d, but statistics are computed
         per-channel across (N, H, W).
         """
-        N_batch, C, H, W = d_out.shape
+        _N_batch, C, _H, _W = d_out.shape
 
         gamma = self.gamma.data.reshape(1, C, 1, 1)
 
@@ -799,7 +798,7 @@ class BatchNorm2d(Module):
 
         return dx
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return [self.gamma, self.beta]
 
 
@@ -899,7 +898,7 @@ class LayerNorm(Module):
 
         return dx
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return [self.gamma, self.beta]
 
 
@@ -943,7 +942,7 @@ class Dropout(Module):
             return d_out
         return d_out * self._mask / (1.0 - self.p)
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return []
 
 
@@ -1007,7 +1006,7 @@ class Embedding(Module):
         np.add.at(self.W.grad, self._indices, d_out)
         return None  # No gradient for discrete indices
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return [self.W]
 
 
@@ -1028,7 +1027,7 @@ class ReLU(Module):
     def backward(self, d_out: np.ndarray) -> np.ndarray:
         return d_out * (self._Z > 0).astype(d_out.dtype)
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return []
 
 
@@ -1055,7 +1054,7 @@ class GELU(Module):
         grad = 0.5 * (1.0 + t) + 0.5 * z * sech2 * g_prime
         return d_out * grad
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return []
 
 
@@ -1077,7 +1076,7 @@ class SiLU(Module):
         grad = s + z * s * (1.0 - s)
         return d_out * grad
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return []
 
 
@@ -1095,7 +1094,7 @@ class Tanh(Module):
     def backward(self, d_out: np.ndarray) -> np.ndarray:
         return d_out * (1.0 - self._tanh ** 2)
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return []
 
 
@@ -1113,7 +1112,7 @@ class Sigmoid(Module):
     def backward(self, d_out: np.ndarray) -> np.ndarray:
         return d_out * self._sigmoid * (1.0 - self._sigmoid)
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return []
 
 
@@ -1139,7 +1138,7 @@ class Softmax(Module):
         sum_dp_p = np.sum(d_out * p, axis=self.axis, keepdims=True)
         return p * (d_out - sum_dp_p)
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         return []
 
 
@@ -1156,7 +1155,7 @@ class ForageAct(Module):
         self,
         mode: str = "scalar",
         init_alpha: float = 0.1,
-        n_neurons: Optional[int] = None,
+        n_neurons: int | None = None,
     ) -> None:
         super().__init__()
         if mode not in ("fixed", "scalar", "per_neuron"):
@@ -1218,7 +1217,7 @@ class ForageAct(Module):
 
         return dZ
 
-    def parameters(self) -> List[Parameter]:
+    def parameters(self) -> list[Parameter]:
         if self._alpha_param is not None:
             return [self._alpha_param]
         return []
